@@ -5,10 +5,9 @@ import com.senai.ex2semana2mod3.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/time" )
@@ -19,5 +18,11 @@ public class TimeController {
     public ResponseEntity<Time> criarTime(@RequestBody Time time) {
         Time novoTime = timeService.salvarTime(time);
         return new ResponseEntity<>(novoTime, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/buscarPorNome")
+    public ResponseEntity<List<Time>> buscarTimePorNome(@RequestParam String nome){
+        List<Time> times = timeService.buscarTimesPorNome(nome);
+        return new ResponseEntity<>(times, HttpStatus.OK);
     }
 }

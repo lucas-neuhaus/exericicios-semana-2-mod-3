@@ -13,6 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 
 
@@ -45,5 +48,35 @@ public class TimeControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("São Paulo Futebol Clube"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.tecnico").value("Dorival Júnior"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.titulos").value(42));
+	}
+	@Test
+	void buscarTimePorNome_deveRetornarTimesComNomeCorrespondente() throws Exception {
+		Time time1 = new Time();
+		time1.setId(1L);
+		time1.setNome("São Paulo Futebol Clube");
+		time1.setTecnico("Dorival Júnior");
+		time1.setTitulos(42);
+
+		Time time2 = new Time();
+		time2.setId(2L);
+		time2.setNome("Palmeiras");
+		time2.setTecnico("Abel Ferreira");
+		time2.setTitulos(37);
+
+		List<Time> times = Arrays.asList(time1, time2);
+
+		when(timeService.buscarTimesPorNome(Mockito.anyString())).thenReturn(times);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/time/buscarPorNome")
+						.param("nome", "São Paulo"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("São Paulo Futebol Clube"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].tecnico").value("Dorival Júnior"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].titulos").value(42))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2L))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Palmeiras"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].tecnico").value("Abel Ferreira"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].titulos").value(37));
 	}
 }

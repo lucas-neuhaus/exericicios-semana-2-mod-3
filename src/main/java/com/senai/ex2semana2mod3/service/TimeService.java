@@ -5,6 +5,8 @@ import com.senai.ex2semana2mod3.repository.TimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TimeService {
     @Autowired
@@ -16,5 +18,9 @@ public class TimeService {
 
     public Time salvarTime(Time time) {
         return timeRepository.save(time);
+    }
+
+    public List<Time> buscarTimesPorNome(String nome){
+        return timeRepository.findByNome(nome);
     }
 }
